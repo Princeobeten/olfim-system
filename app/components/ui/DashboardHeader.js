@@ -2,11 +2,19 @@
 
 import { useState } from 'react';
 import { useApp } from '@/context/AppContext';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardHeader({ title }) {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { user, logout } = useApp();
+  const router = useRouter();
+  
+  const handleLogout = () => {
+    logout();
+    router.push('/search');
+  };
 
   return (
     <header className="bg-white shadow-sm">
@@ -51,22 +59,22 @@ export default function DashboardHeader({ title }) {
                   </div>
                   <div className="max-h-60 overflow-y-auto">
                     {[1, 2, 3].map((item) => (
-                      <a
+                      <Link
                         key={item}
-                        href="#"
+                        href="/dashboard/notifications"
                         className="block px-4 py-2 hover:bg-gray-50 border-b border-gray-100"
                       >
                         <p className="text-sm font-medium text-gray-900">New message received</p>
                         <p className="text-xs text-gray-500">5 minutes ago</p>
-                      </a>
+                      </Link>
                     ))}
                   </div>
-                  <a
-                    href="#"
+                  <Link
+                    href="/dashboard/notifications"
                     className="block px-4 py-2 text-center text-sm text-indigo-600 hover:bg-gray-50"
                   >
                     View all notifications
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
@@ -90,20 +98,20 @@ export default function DashboardHeader({ title }) {
                     <p className="text-sm font-medium text-gray-900">{user?.name}</p>
                     <p className="text-xs text-gray-500">{user?.email}</p>
                   </div>
-                  <a
+                  <Link
                     href="/dashboard/profile"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                   >
                     Your Profile
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/dashboard/settings"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                   >
                     Settings
-                  </a>
+                  </Link>
                   <button
-                    onClick={logout}
+                    onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                   >
                     Sign out
