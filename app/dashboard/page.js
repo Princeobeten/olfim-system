@@ -24,7 +24,9 @@ export default function Dashboard() {
     // Fetch all items when the component mounts
     const fetchItems = async () => {
       try {
-        await getAdminItems();
+        console.log('Fetching admin items...');
+        const result = await getAdminItems();
+        console.log('Admin items fetch result:', result);
       } catch (error) {
         console.error('Error fetching admin items:', error);
       }
@@ -32,6 +34,42 @@ export default function Dashboard() {
     
     fetchItems();
   }, [getAdminItems]);
+  
+  // Debug log when items change
+  useEffect(() => {
+    console.log('Items updated in dashboard:', items);
+    console.log('Items length:', items?.length);
+    console.log('Items array check:', Array.isArray(items));
+    
+    // Add a debug element to the DOM
+    const debugElement = document.createElement('div');
+    debugElement.id = 'dashboard-debug';
+    debugElement.style.position = 'fixed';
+    debugElement.style.bottom = '10px';
+    debugElement.style.right = '10px';
+    debugElement.style.backgroundColor = 'rgba(255, 255, 0, 0.8)';
+    debugElement.style.padding = '10px';
+    debugElement.style.borderRadius = '5px';
+    debugElement.style.zIndex = '9999';
+    debugElement.style.maxWidth = '300px';
+    debugElement.style.maxHeight = '200px';
+    debugElement.style.overflow = 'auto';
+    debugElement.innerHTML = `
+      <p><strong>Dashboard Debug:</strong></p>
+      <p>Items: ${items ? items.length : 'null'}</p>
+      <p>Loading: ${itemsLoading ? 'true' : 'false'}</p>
+      <p>Error: ${itemsError || 'none'}</p>
+    `;
+    
+    // Remove any existing debug element
+    const existingDebug = document.getElementById('dashboard-debug');
+    if (existingDebug) {
+      existingDebug.remove();
+    }
+    
+    // Add to body
+    document.body.appendChild(debugElement);
+  }, [items, itemsLoading, itemsError]);
   
   // Calculate status counts when items change
   useEffect(() => {
@@ -136,6 +174,7 @@ export default function Dashboard() {
           <div className="flex space-x-4">
             <Link
               href="/search"
+              prefetch={true}
               className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 flex items-center"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -145,6 +184,7 @@ export default function Dashboard() {
             </Link>
             <Link
               href="/report"
+              prefetch={true}
               className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 flex items-center"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -18,9 +18,11 @@ export default function Login() {
   const router = useRouter();
 
   useEffect(() => {
-    // If user is already authenticated, redirect to dashboard
+    // If user is already authenticated, redirect to search page
     if (isAuthenticated) {
-      router.push('/dashboard');
+      console.log('User is authenticated, redirecting to search page');
+      // Use Next.js router for client-side navigation
+      router.push('/search');
     }
   }, [isAuthenticated, router]);
 
@@ -36,7 +38,9 @@ export default function Login() {
     try {
       const success = await login(email, password);
       if (success) {
-        router.push('/dashboard');
+        console.log('Login successful, redirecting to search page');
+        // Use Next.js router for client-side navigation
+        router.push('/search');
       } else {
         setErrorMessage('Invalid email or password');
       }

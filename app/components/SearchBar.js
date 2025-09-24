@@ -29,6 +29,8 @@ export default function SearchBar({ onSearch }) {
     const typeParam = searchParams.get('type') || 'all';
     const categoryParam = searchParams.get('category') || 'All Categories';
     
+    console.log('SearchBar: URL params:', { queryParam, typeParam, categoryParam });
+    
     setQuery(queryParam);
     setType(typeParam);
     setCategory(categoryParam);
@@ -43,16 +45,24 @@ export default function SearchBar({ onSearch }) {
     if (type !== 'all') params.set('type', type);
     if (category !== 'All Categories') params.set('category', category);
     
+    console.log('SearchBar: Submitting search with params:', { query, type, category });
+    console.log('SearchBar: URL params string:', params.toString());
+    
     // Update URL
     router.push(`/search?${params.toString()}`);
     
     // Call onSearch callback if provided
     if (onSearch) {
-      onSearch({
+      const searchParams = {
         query,
         type: type !== 'all' ? type : '',
         category: category !== 'All Categories' ? category : ''
-      });
+      };
+      
+      console.log('SearchBar: Calling onSearch with:', searchParams);
+      onSearch(searchParams);
+    } else {
+      console.log('SearchBar: No onSearch callback provided');
     }
   };
   

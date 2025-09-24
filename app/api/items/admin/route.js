@@ -24,8 +24,11 @@ const verifyAdminToken = (token) => {
 
 export async function GET(request) {
   try {
+    console.log('Admin API called');
+    
     // Connect to database
     await dbConnect();
+    console.log('Database connected');
     
     // Get authorization header (optional now)
     const authHeader = request.headers.get('authorization');
@@ -37,7 +40,10 @@ export async function GET(request) {
       const decoded = verifyAdminToken(token);
       if (decoded) {
         isAdmin = true;
+        console.log('Admin user verified:', decoded);
       }
+    } else {
+      console.log('No authorization token provided or invalid format');
     }
     
     // For development/MVP purposes, allow access without authentication
@@ -51,11 +57,12 @@ export async function GET(request) {
     
     // Get all items
     const items = await Item.find().sort({ createdAt: -1 });
+    console.log(`Found ${items.length} items for admin`);
     
     // Return success response with items
     return NextResponse.json(
-      { success: true, items },
-      { status: 200 }
+      { success: true, items, count: items.length },
+      { status: 200, headers: { 'Cache-Control': 'no-store' } }
     );
     
   } catch (error) {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useApp, Item, SearchParams } from '@/context/AppContext';
@@ -24,22 +24,35 @@ export default function SearchPage() {
   const type = typeParam === null ? undefined : typeParam;
   const category = categoryParam !== null && categoryParam !== 'All Categories' ? categoryParam : undefined;
   
+  // Use a ref to track if the initial search has been performed
+  const initialSearchPerformedRef = useRef(false);
+
   // Perform search when parameters change or on initial load
   useEffect(() => {
     const performSearch = async () => {
+      // Skip if we're already searching to prevent loops
+      if (isSearching) return;
+      
       setIsSearching(true);
       try {
+        console.log('Searching with params:', { query, type, category });
+        
         // If there are search parameters, use them; otherwise, fetch recent items
         if (query || type || category) {
-          await searchItems({ 
+          const result = await searchItems({ 
             query, 
             type, 
             category 
           });
+          console.log('Search result with params:', result);
         } else {
           // Fetch recent items by default
-          await searchItems({ limit: 10 });
+          const result = await searchItems({ limit: 20 });
+          console.log('Default search result:', result);
         }
+        
+        // Mark that we've performed the initial search
+        initialSearchPerformedRef.current = true;
       } catch (error) {
         console.error('Search error:', error);
       } finally {
@@ -47,8 +60,16 @@ export default function SearchPage() {
       }
     };
     
-    performSearch();
-  }, [query, type, category, searchItems]);
+    // Only perform search if it's the initial render or if search params have changed
+    if (!initialSearchPerformedRef.current || query !== undefined || type !== undefined || category !== undefined) {
+      performSearch();
+    }
+  }, [query, type, category, searchItems, isSearching]);
+  
+  // Debug log when items change
+  useEffect(() => {
+    console.log('Items updated in search page:', items);
+  }, [items]);
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -64,6 +85,7 @@ export default function SearchPage() {
           <div className="w-full md:w-auto">
             <Link
               href="/report"
+              prefetch={true}
               className="w-full md:w-auto bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center md:justify-start"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
@@ -81,6 +103,14 @@ export default function SearchPage() {
         </div>
         
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+          {/* Debug info */}
+          <div className="p-4 bg-yellow-50 border-b border-yellow-100">
+            <p className="text-sm font-mono">Debug Info:</p>
+            <p className="text-sm font-mono">Items: {Array.isArray(items) ? items.length : 'not an array'}</p>
+            <p className="text-sm font-mono">Loading: {(isSearching || itemsLoading) ? 'true' : 'false'}</p>
+            <p className="text-sm font-mono">Error: {itemsError || 'none'}</p>
+          </div>
+          
           <ItemList 
             items={Array.isArray(items) ? items : []} 
             isLoading={isSearching || itemsLoading} 

@@ -27,6 +27,7 @@ export default function Home() {
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/search"
+                  prefetch={true}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md text-base font-medium shadow-md transition-colors flex items-center justify-center"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,6 +37,7 @@ export default function Home() {
                 </Link>
                 <Link
                   href="/report"
+                  prefetch={true}
                   className="bg-white hover:bg-gray-50 text-blue-600 border border-blue-600 px-6 py-3 rounded-md text-base font-medium shadow-sm transition-colors flex items-center justify-center"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

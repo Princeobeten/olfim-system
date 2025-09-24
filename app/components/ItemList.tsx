@@ -30,6 +30,10 @@ export default function ItemList({ items = [], isAdmin = false, isLoading = fals
   const { updateItemStatus } = useApp();
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   
+  // Debug logging
+  console.log('ItemList render with:', { itemsLength: items?.length, isAdmin, isLoading, error });
+  console.log('Items data:', items);
+  
   if (isLoading) {
     return (
       <div className="bg-white shadow-md rounded-lg p-6 text-center">

@@ -21,9 +21,11 @@ export default function Signup() {
   const router = useRouter();
 
   useEffect(() => {
-    // If user is already authenticated, redirect to dashboard
+    // If user is already authenticated, redirect to search page
     if (isAuthenticated) {
-      router.push('/dashboard');
+      console.log('User is authenticated, redirecting to search page');
+      // Use Next.js router for client-side navigation
+      router.push('/search');
     }
   }, [isAuthenticated, router]);
 
@@ -45,7 +47,9 @@ export default function Signup() {
     try {
       const success = await signup({ name, email, password });
       if (success) {
-        router.push('/dashboard');
+        console.log('Signup successful, redirecting to search page');
+        // Use Next.js router for client-side navigation
+        router.push('/search');
       } else {
         setErrorMessage('Failed to create account');
       }

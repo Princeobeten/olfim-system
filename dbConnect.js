@@ -1,9 +1,12 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = "mongodb+srv://user_db_user:r279PhhU0dKXoOsI@fuzzy-based-expert-syst.2cx2z6f.mongodb.net/olfim_system?retryWrites=true&w=majority";
+// Get MongoDB URI from environment variable or use default
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/olfim';
+
+console.log('MongoDB URI:', MONGODB_URI.replace(/mongodb\+srv:\/\/([^:]+):[^@]+@/, 'mongodb+srv://$1:****@')); // Log URI with password masked
 
 if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+  throw new Error('Please define the MONGODB_URI environment variable inside .env');
 }
 
 /**
@@ -27,9 +30,15 @@ async function dbConnect() {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
+    cached.promise = mongoose.connect(MONGODB_URI, opts)
+      .then((mongoose) => {
+        console.log('MongoDB connected successfully');
+        return mongoose;
+      })
+      .catch(err => {
+        console.error('MongoDB connection error:', err);
+        throw err;
+      });
   }
 
   try {

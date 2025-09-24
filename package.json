@@ -8,13 +8,18 @@
     "start": "next start",
     "custom-server": "node server.js",
     "lint": "next lint",
-    "setup-demo": "node scripts/setup-demo.js"
+    "setup-demo": "node scripts/setup-demo.js",
+    "check-db": "node scripts/check-db.js",
+    "add-test-item": "node scripts/add-test-item.js",
+    "test-app": "node scripts/test-app.js",
+    "test-search": "node scripts/test-search.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "dotenv": "^16.3.1",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.5.0",
     "mongoose": "^8.18.2",
     "next": "14.2.27",
     "react": "^18",

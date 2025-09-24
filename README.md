@@ -103,7 +103,10 @@ Best Practices: Loading spinners (animate-spin), error toasts (react-hot-toast).
 Errors: In hooks/API: try-catch, log specifics (e.g., console.error('Report error:', error.message)), return { success: false, error: msg }.
 Security (MVP): Basic (hashed passwords, role checks). No advanced auth.
 Modularity: Hooks for API logic; context spreads state/DB access.
-Testing: Add /scripts/test.js for basic API tests (e.g., using supertest). Run node scripts/test.js.
+Testing: Several test scripts are available in the `/scripts` directory:
+- `npm run test-app` - Verifies database connection and checks for users and items
+- `npm run check-db` - Shows database content
+- `npm run setup-demo` - Sets up demo data including admin user and sample items
 Performance: Use Next.js Image for uploads, server components where possible.
 
 6. High-Level System Flow (Based on SSADM)

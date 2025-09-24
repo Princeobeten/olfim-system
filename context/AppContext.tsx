@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
 import useItems from '@/hooks/useItems';
@@ -77,13 +77,121 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [itemsError, setItemsError] = useState<string | null>(null);
   const router = useRouter();
   const { login: authLogin, logout: authLogout, getCurrentUser, signup: authSignup } = useAuth();
-  const { 
-    reportItem,
-    searchItems,
-    getAdminItems,
-    updateItemStatus,
-    getUserItems 
-  } = useItems();
+  
+  // Import the useItems hook but don't destructure it to avoid the infinite loop
+  // We'll use the hook's functions directly in our callbacks
+  const itemsHook = useItems();
+  
+  // Define item-related functions with useCallback to prevent infinite loops
+  const reportItem = useCallback(async (itemData: any) => {
+    setItemsLoading(true);
+    setItemsError(null);
+    try {
+      const result = await itemsHook.reportItem(itemData);
+      if (result.success && result.item) {
+        // Add the new item to the items array
+        setItems(prevItems => [result.item, ...prevItems]);
+      }
+      return result;
+    } catch (error: any) {
+      console.error('Report item error:', error);
+      setItemsError(error?.message || 'An error occurred');
+      return { success: false, error: error?.message || 'Unknown error' };
+    } finally {
+      setItemsLoading(false);
+    }
+  }, [itemsHook]);
+  
+  const searchItems = useCallback(async (searchParams: SearchParams) => {
+    setItemsLoading(true);
+    setItemsError(null);
+    try {
+      const result = await itemsHook.searchItems(searchParams);
+      console.log('Search result in AppContext:', result);
+      if (result.success && Array.isArray(result.items)) {
+        // Update the items state
+        setItems(result.items);
+      } else {
+        setItems([]);
+      }
+      return result;
+    } catch (error: any) {
+      console.error('Search items error:', error);
+      setItemsError(error?.message || 'An error occurred');
+      setItems([]);
+      return { success: false, error: error?.message || 'Unknown error' };
+    } finally {
+      setItemsLoading(false);
+    }
+  }, [itemsHook]);
+  
+  const getAdminItems = useCallback(async () => {
+    setItemsLoading(true);
+    setItemsError(null);
+    try {
+      const result = await itemsHook.getAdminItems();
+      console.log('Admin items result in AppContext:', result);
+      if (result.success && Array.isArray(result.items)) {
+        // Update the items state
+        setItems(result.items);
+      } else {
+        setItems([]);
+      }
+      return result;
+    } catch (error: any) {
+      console.error('Get admin items error:', error);
+      setItemsError(error?.message || 'An error occurred');
+      setItems([]);
+      return { success: false, error: error?.message || 'Unknown error' };
+    } finally {
+      setItemsLoading(false);
+    }
+  }, [itemsHook]);
+  
+  const updateItemStatus = useCallback(async (itemId: string, status: string) => {
+    setItemsLoading(true);
+    setItemsError(null);
+    try {
+      const result = await itemsHook.updateItemStatus(itemId, status);
+      if (result.success && result.item) {
+        // Update the item in the items array
+        setItems(prevItems => 
+          prevItems.map(item => 
+            item._id === itemId ? { ...item, status } : item
+          )
+        );
+      }
+      return result;
+    } catch (error: any) {
+      console.error('Update item status error:', error);
+      setItemsError(error?.message || 'An error occurred');
+      return { success: false, error: error?.message || 'Unknown error' };
+    } finally {
+      setItemsLoading(false);
+    }
+  }, [itemsHook]);
+  
+  const getUserItems = useCallback(async () => {
+    setItemsLoading(true);
+    setItemsError(null);
+    try {
+      const result = await itemsHook.getUserItems();
+      if (result.success && Array.isArray(result.items)) {
+        // Update the items state
+        setItems(result.items);
+      } else {
+        setItems([]);
+      }
+      return result;
+    } catch (error: any) {
+      console.error('Get user items error:', error);
+      setItemsError(error?.message || 'An error occurred');
+      setItems([]);
+      return { success: false, error: error?.message || 'Unknown error' };
+    } finally {
+      setItemsLoading(false);
+    }
+  }, [itemsHook]);
 
   // Check if token is expired
   const isTokenExpired = (token: string): boolean => {

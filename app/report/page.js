@@ -37,6 +37,7 @@ export default function ReportPage() {
         <div className="flex justify-between items-center mb-6">
           <Link
             href="/search"
+            prefetch={true}
             className="inline-flex items-center text-blue-600 hover:text-blue-800"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
@@ -46,6 +47,7 @@ export default function ReportPage() {
           </Link>
           <Link
             href="/dashboard"
+            prefetch={true}
             className="inline-flex items-center text-blue-600 hover:text-blue-800"
           >
             <span>View My Reports</span>

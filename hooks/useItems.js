@@ -72,28 +72,41 @@ export default function useItems() {
     try {
       // Build query string from search params
       const queryString = new URLSearchParams(searchParams).toString();
+      console.log('Search API request:', `/api/items/search?${queryString}`);
       
       const response = await fetch(`/api/items/search?${queryString}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        }
+        },
+        // Add cache: 'no-store' to prevent caching
+        cache: 'no-store'
       });
       
+      console.log('Search API response status:', response.status);
       const data = await response.json();
+      console.log('Search API response data:', data);
       
       if (!response.ok) {
         throw new Error(data.error || 'Failed to search items');
       }
       
-      setItems(data.items);
+      if (Array.isArray(data.items)) {
+        setItems(data.items);
+        console.log(`Set ${data.items.length} items from search`);
+      } else {
+        console.error('Invalid items data format:', data);
+        setItems([]);
+      }
+      
       return { success: true, items: data.items };
     } catch (error) {
-      console.error('Search error:', error.message);
+      console.error('Search error:', error);
       setError(error.message || 'An error occurred while searching for items');
       
       // Show error toast
       toast.error(error.message || 'Failed to search items');
+      setItems([]);
       
       return { success: false, error: error.message };
     } finally {
@@ -118,25 +131,39 @@ export default function useItems() {
         headers['Authorization'] = `Bearer ${token}`;
       }
       
+      console.log('Admin API request headers:', { ...headers, Authorization: headers.Authorization ? 'Bearer [REDACTED]' : undefined });
+      
       const response = await fetch('/api/items/admin', {
         method: 'GET',
-        headers
+        headers,
+        // Add cache: 'no-store' to prevent caching
+        cache: 'no-store'
       });
       
+      console.log('Admin API response status:', response.status);
       const data = await response.json();
+      console.log('Admin API response data:', data);
       
       if (!response.ok) {
         throw new Error(data.error || 'Failed to fetch admin items');
       }
       
-      setItems(data.items);
+      if (Array.isArray(data.items)) {
+        setItems(data.items);
+        console.log(`Set ${data.items.length} items from admin API`);
+      } else {
+        console.error('Invalid items data format:', data);
+        setItems([]);
+      }
+      
       return { success: true, items: data.items };
     } catch (error) {
-      console.error('Admin items error:', error.message);
+      console.error('Admin items error:', error);
       setError(error.message || 'An error occurred while fetching admin items');
       
       // Show error toast
       toast.error(error.message || 'Failed to fetch admin items');
+      setItems([]);
       
       return { success: false, error: error.message };
     } finally {
