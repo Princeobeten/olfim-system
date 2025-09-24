@@ -33,7 +33,7 @@ export default function Dashboard() {
     };
     
     fetchItems();
-  }, []);
+  }, [getAdminItems]);
   
   // Debug log when items change
   useEffect(() => {
