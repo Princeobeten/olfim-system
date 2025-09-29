@@ -18,18 +18,18 @@ This document outlines the fixes made to the navigation system in the OLFIM appl
 ## 2. Login and Signup Pages
 
 ### Issues Fixed:
-- Verified that login and signup pages correctly redirect to the search page after successful authentication
-- Both pages use `router.push('/search')` for client-side navigation
+- Updated login and signup pages to redirect to the dashboard page after successful authentication
+- Both pages now use `router.push('/dashboard')` for client-side navigation
 
-### Files Verified:
+### Files Modified:
 - `app/login/page.js`
 - `app/signup/page.js`
 
 ## 3. LogoutButton Component
 
 ### Issues Fixed:
-- Updated logout handler to redirect to the search page instead of the home page
-- Changed `router.push('/')` to `router.push('/search')`
+- Updated logout handler to redirect to the dashboard page instead of the search page
+- Changed `router.push('/search')` to `router.push('/dashboard')`
 
 ### Files Modified:
 - `app/components/LogoutButton.js`
@@ -53,16 +53,16 @@ To verify these fixes:
 1. **Login Flow**:
    - Navigate to the login page
    - Log in with valid credentials
-   - Verify redirection to the search page
+   - Verify redirection to the dashboard page
 
 2. **Signup Flow**:
    - Navigate to the signup page
    - Create a new account
-   - Verify redirection to the search page
+   - Verify redirection to the dashboard page
 
 3. **Logout Flow**:
    - Click the logout button from any page
-   - Verify redirection to the search page
+   - Verify redirection to the dashboard page
 
 4. **Dashboard Navigation**:
    - Navigate to the dashboard

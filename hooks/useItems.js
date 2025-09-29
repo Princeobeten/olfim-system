@@ -120,8 +120,19 @@ export default function useItems() {
     setError(null);
     
     try {
-      // Get token if available, but don't require it
-      const token = localStorage.getItem('token');
+      // Get user data from localStorage to extract token
+      const userData = localStorage.getItem('user');
+      let token = null;
+      
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          token = user.token;
+        } catch (e) {
+          console.error('Error parsing user data:', e);
+        }
+      }
+      
       const headers = {
         'Content-Type': 'application/json'
       };

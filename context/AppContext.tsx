@@ -100,7 +100,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     } finally {
       setItemsLoading(false);
     }
-  }, [itemsHook]);
+  }, []); // Remove itemsHook dependency to prevent infinite loop
   
   const searchItems = useCallback(async (searchParams: SearchParams) => {
     setItemsLoading(true);
@@ -123,7 +123,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     } finally {
       setItemsLoading(false);
     }
-  }, [itemsHook]);
+  }, []); // Remove itemsHook dependency to prevent infinite loop
   
   const getAdminItems = useCallback(async () => {
     setItemsLoading(true);
@@ -146,7 +146,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     } finally {
       setItemsLoading(false);
     }
-  }, [itemsHook]);
+  }, []); // Remove itemsHook dependency to prevent infinite loop
   
   const updateItemStatus = useCallback(async (itemId: string, status: string) => {
     setItemsLoading(true);
@@ -280,19 +280,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
       window.removeEventListener('storage', handleStorageChange);
       clearInterval(tokenCheckInterval);
     };
-  }, [router, authLogout, getCurrentUser, user]);
+  }, [router, authLogout, getCurrentUser]); // Remove user dependency to prevent infinite loop
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setLoading(true);
     try {
+      console.log('AppContext: Starting login process');
       const result = await authLogin(email, password);
+      console.log('AppContext: Login result:', result);
+      
       if (result.success) {
+        console.log('AppContext: Setting user:', result.user);
         setUser(result.user);
+        console.log('AppContext: User set, returning true');
         return true;
       }
+      console.log('AppContext: Login failed, returning false');
       return false;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('AppContext: Login error:', error);
       return false;
     } finally {
       setLoading(false);

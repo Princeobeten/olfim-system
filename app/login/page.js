@@ -18,11 +18,11 @@ export default function Login() {
   const router = useRouter();
 
   useEffect(() => {
-    // If user is already authenticated, redirect to search page
+    // If user is already authenticated, redirect to dashboard
     if (isAuthenticated) {
-      console.log('User is authenticated, redirecting to search page');
+      console.log('User is authenticated, redirecting to dashboard');
       // Use Next.js router for client-side navigation
-      router.push('/search');
+      router.push('/dashboard');
     }
   }, [isAuthenticated, router]);
 
@@ -36,12 +36,21 @@ export default function Login() {
     }
     
     try {
+      console.log('Attempting login with email:', email);
       const success = await login(email, password);
+      console.log('Login result:', success);
+      console.log('isAuthenticated after login:', isAuthenticated);
+      
       if (success) {
-        console.log('Login successful, redirecting to search page');
-        // Use Next.js router for client-side navigation
-        router.push('/search');
+        console.log('Login successful, redirecting to dashboard');
+        // Force redirect immediately
+        router.push('/dashboard');
+        // Also try window.location as backup
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 500);
       } else {
+        console.log('Login failed, showing error message');
         setErrorMessage('Invalid email or password');
       }
     } catch (error) {

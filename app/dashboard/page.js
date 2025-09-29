@@ -33,43 +33,13 @@ export default function Dashboard() {
     };
     
     fetchItems();
-  }, [getAdminItems]);
+  }, []); // Remove getAdminItems dependency to prevent infinite loop
   
   // Debug log when items change
   useEffect(() => {
     console.log('Items updated in dashboard:', items);
     console.log('Items length:', items?.length);
-    console.log('Items array check:', Array.isArray(items));
-    
-    // Add a debug element to the DOM
-    const debugElement = document.createElement('div');
-    debugElement.id = 'dashboard-debug';
-    debugElement.style.position = 'fixed';
-    debugElement.style.bottom = '10px';
-    debugElement.style.right = '10px';
-    debugElement.style.backgroundColor = 'rgba(255, 255, 0, 0.8)';
-    debugElement.style.padding = '10px';
-    debugElement.style.borderRadius = '5px';
-    debugElement.style.zIndex = '9999';
-    debugElement.style.maxWidth = '300px';
-    debugElement.style.maxHeight = '200px';
-    debugElement.style.overflow = 'auto';
-    debugElement.innerHTML = `
-      <p><strong>Dashboard Debug:</strong></p>
-      <p>Items: ${items ? items.length : 'null'}</p>
-      <p>Loading: ${itemsLoading ? 'true' : 'false'}</p>
-      <p>Error: ${itemsError || 'none'}</p>
-    `;
-    
-    // Remove any existing debug element
-    const existingDebug = document.getElementById('dashboard-debug');
-    if (existingDebug) {
-      existingDebug.remove();
-    }
-    
-    // Add to body
-    document.body.appendChild(debugElement);
-  }, [items, itemsLoading, itemsError]);
+  }, [items]);
   
   // Calculate status counts when items change
   useEffect(() => {
